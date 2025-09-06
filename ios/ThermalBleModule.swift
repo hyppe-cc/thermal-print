@@ -604,12 +604,18 @@ public class ThermalBleModule: Module {
         // Continue with next chunk
         let nextIndex = currentChunkIndex + 1
         sendImageChunks(currentChunks, to: peripheral, characteristic: characteristic, index: nextIndex)
-      } else if currentChunks.isEmpty {
-        // Regular text write completed
+      } else {
+        // Either regular text write completed OR QR chunks finished
+        // Always resolve the promise and clear state
         self.printPromise?.resolve(nil)
         self.printPromise = nil
+        
+        // Clear chunk state if it exists
+        if !currentChunks.isEmpty {
+          currentChunks = []
+          currentChunkIndex = 0
+        }
       }
-      // If chunks are done, sendImageChunks will handle promise resolution
     }
   }
 }
