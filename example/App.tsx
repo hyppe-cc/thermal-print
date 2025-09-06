@@ -106,6 +106,28 @@ export default function App() {
     }
   };
 
+  const testQRCodePrint = async () => {
+    try {
+      await ThermalPrinter.setAlignment(1); // Center
+      await ThermalPrinter.printText("=== QR CODE TEST ===");
+      await ThermalPrinter.setAlignment(0); // Left
+      await ThermalPrinter.printLine();
+      
+      // Print QR code with website URL (automatically sized and centered)
+      await ThermalPrinter.printQRCode("https://www.example.com");
+      
+      await ThermalPrinter.printLine();
+      await ThermalPrinter.setAlignment(1); // Center
+      await ThermalPrinter.printText("Scan to visit website");
+      await ThermalPrinter.setAlignment(0); // Left
+      
+      await ThermalPrinter.feed(2);
+      console.log("QR code print completed");
+    } catch (error) {
+      console.error("QR code print error:", error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container}>
@@ -144,6 +166,7 @@ export default function App() {
         <Group name="Print Test">
           <Button title="Print Test" onPress={testPrint} />
           <Button title="Print Receipt (Columns)" onPress={testColumnPrint} />
+          <Button title="Print QR Code" onPress={testQRCodePrint} />
         </Group>
       </ScrollView>
     </SafeAreaView>

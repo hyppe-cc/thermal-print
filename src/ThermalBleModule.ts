@@ -16,6 +16,7 @@ declare class ThermalBleNativeModule extends NativeModule<ThermalBleModuleEvents
   disconnect(): Promise<void>;
   isConnected(): Promise<boolean>;
   writeData(data: number[]): Promise<void>;
+  printQRCode(content: string, printerWidth: number): Promise<void>;
 }
 
 export const ThermalBleModule =

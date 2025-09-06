@@ -115,4 +115,16 @@ export class ThermalPrinter {
     }
   }
 
+  /**
+   * Print QR code (automatically sized and centered based on current printer width)
+   * @param content Text content to encode in QR code
+   */
+  static async printQRCode(content: string): Promise<void> {
+    // Get current printer width in mm (58 or 80)
+    const printerWidthMm = Object.entries(this.printerWidths)
+      .find(([, chars]) => chars === this.currentWidth)?.[0] || '58';
+    
+    await ThermalBleModule.printQRCode(content, parseInt(printerWidthMm));
+  }
+
 }
