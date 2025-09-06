@@ -8,7 +8,11 @@ import {
   View,
 } from "react-native";
 
-import { ThermalBleModule, ThermalPrinter, addConnectionListener } from "thermal-printer";
+import {
+  ThermalBleModule,
+  ThermalPrinter,
+  addConnectionListener,
+} from "thermal-printer";
 
 export default function App() {
   const [devices, setDevices] = useState<any[]>([]);
@@ -46,7 +50,7 @@ export default function App() {
     console.log(device);
     await ThermalBleModule.connect(device.address);
 
-    console.log('connected');
+    console.log("connected");
   };
 
   const stopScan = async () => {
@@ -67,10 +71,38 @@ export default function App() {
       await ThermalPrinter.setBold(true);
       await ThermalPrinter.printText("Bold text");
       await ThermalPrinter.setBold(false);
-      await ThermalPrinter.feed(10);
+      await ThermalPrinter.feed(2);
       console.log("Print completed");
     } catch (error) {
       console.error("Print error:", error);
+    }
+  };
+
+  const testColumnPrint = async () => {
+    try {
+      // Set printer width for 58mm printer (32 characters)
+      ThermalPrinter.setPrinterWidth(58);
+      
+      await ThermalPrinter.setAlignment(1); // Center
+      await ThermalPrinter.printText("=== RECEIPT ===");
+      await ThermalPrinter.setAlignment(0); // Left
+      await ThermalPrinter.printLine();
+      
+      // Print items using two-column layout
+      await ThermalPrinter.printTwoColumns("Coffee x2", "$5.00");
+      await ThermalPrinter.printTwoColumns("Sandwich", "$8.50");
+      await ThermalPrinter.printTwoColumns("Tax", "$1.35");
+      
+      await ThermalPrinter.printText("--------------------------------");
+      
+      await ThermalPrinter.setBold(true);
+      await ThermalPrinter.printTwoColumns("TOTAL", "$14.85");
+      await ThermalPrinter.setBold(false);
+      
+      await ThermalPrinter.feed(3);
+      console.log("Column print completed");
+    } catch (error) {
+      console.error("Column print error:", error);
     }
   };
 
@@ -111,6 +143,7 @@ export default function App() {
 
         <Group name="Print Test">
           <Button title="Print Test" onPress={testPrint} />
+          <Button title="Print Receipt (Columns)" onPress={testColumnPrint} />
         </Group>
       </ScrollView>
     </SafeAreaView>

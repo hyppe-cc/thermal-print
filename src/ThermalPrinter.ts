@@ -6,6 +6,29 @@ export class ThermalPrinter {
   private static readonly GS = 0x1D;
   private static readonly LF = 0x0A; // Line feed
 
+  // Printer width settings (characters per line)
+  private static printerWidths = {
+    58: 32,  // 58mm printer = ~32 characters
+    80: 48,  // 80mm printer = ~48 characters
+  };
+
+  private static currentWidth = 32; // Default to 58mm
+
+  /**
+   * Set printer width based on paper size
+   * @param mm Paper width in millimeters (58 or 80)
+   */
+  static setPrinterWidth(mm: 58 | 80): void {
+    this.currentWidth = this.printerWidths[mm];
+  }
+
+  /**
+   * Get current printer width in characters
+   */
+  static getPrinterWidth(): number {
+    return this.currentWidth;
+  }
+
   /**
    * Print text to the thermal printer
    * @param text The text to print
@@ -68,4 +91,28 @@ export class ThermalPrinter {
     const data = Array(lines).fill(this.LF);
     await ThermalBleModule.writeData(data);
   }
+
+  /**
+   * Print two-column layout: left text and right text
+   * Fills space between left and right text to push right text to the edge
+   * @param leftText Text for left side
+   * @param rightText Text for right side
+   */
+  static async printTwoColumns(leftText: string, rightText: string): Promise<void> {
+    const maxWidth = this.currentWidth;
+    const totalTextLength = leftText.length + rightText.length;
+    
+    if (totalTextLength >= maxWidth) {
+      // If combined text is too long, truncate left text
+      const availableLeftWidth = maxWidth - rightText.length - 1;
+      const truncatedLeft = leftText.substring(0, Math.max(0, availableLeftWidth));
+      await this.printText(truncatedLeft + ' ' + rightText);
+    } else {
+      // Fill space between left and right text
+      const spacesNeeded = maxWidth - totalTextLength;
+      const spaces = ' '.repeat(spacesNeeded);
+      await this.printText(leftText + spaces + rightText);
+    }
+  }
+
 }
