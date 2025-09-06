@@ -127,4 +127,21 @@ export class ThermalPrinter {
     await ThermalBleModule.printQRCode(content, parseInt(printerWidthMm));
   }
 
+  /**
+   * Print image from base64 data (automatically scaled to fit printer width)
+   * @param imageBase64 Base64 encoded image data (supports JPEG, PNG, etc.)
+   * 
+   * The image will be automatically scaled to fit the printer paper width while
+   * maintaining aspect ratio. For example:
+   * - 1920x1080 image on 58mm printer (464 dots) → scaled to 464x261
+   * - 1920x1080 image on 80mm printer (640 dots) → scaled to 640x360
+   */
+  static async printImage(imageBase64: string): Promise<void> {
+    // Get current printer width in mm (58 or 80)
+    const printerWidthMm = Object.entries(this.printerWidths)
+      .find(([, chars]) => chars === this.currentWidth)?.[0] || '58';
+    
+    await ThermalBleModule.printImage(imageBase64, parseInt(printerWidthMm));
+  }
+
 }

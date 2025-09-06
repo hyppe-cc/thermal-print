@@ -13,6 +13,8 @@ import {
   ThermalPrinter,
   addConnectionListener,
 } from "thermal-printer";
+import { base } from "./bas";
+import { pika } from "./pika";
 
 export default function App() {
   const [devices, setDevices] = useState<any[]>([]);
@@ -82,23 +84,23 @@ export default function App() {
     try {
       // Set printer width for 58mm printer (32 characters)
       ThermalPrinter.setPrinterWidth(58);
-      
+
       await ThermalPrinter.setAlignment(1); // Center
       await ThermalPrinter.printText("=== RECEIPT ===");
       await ThermalPrinter.setAlignment(0); // Left
       await ThermalPrinter.printLine();
-      
+
       // Print items using two-column layout
       await ThermalPrinter.printTwoColumns("Coffee x2", "$5.00");
       await ThermalPrinter.printTwoColumns("Sandwich", "$8.50");
       await ThermalPrinter.printTwoColumns("Tax", "$1.35");
-      
+
       await ThermalPrinter.printText("--------------------------------");
-      
+
       await ThermalPrinter.setBold(true);
       await ThermalPrinter.printTwoColumns("TOTAL", "$14.85");
       await ThermalPrinter.setBold(false);
-      
+
       await ThermalPrinter.feed(3);
       console.log("Column print completed");
     } catch (error) {
@@ -112,15 +114,19 @@ export default function App() {
       await ThermalPrinter.printText("=== QR CODE TEST ===");
       await ThermalPrinter.setAlignment(0); // Left
       await ThermalPrinter.printLine();
-      
+
       // Print QR code with website URL (automatically sized and centered)
       await ThermalPrinter.printQRCode("https://www.example.com");
-      
+
+      await ThermalPrinter.printImage(base);
+
+      await ThermalPrinter.printImage(pika);
+
       await ThermalPrinter.printLine();
       await ThermalPrinter.setAlignment(1); // Center
       await ThermalPrinter.printText("Scan to visit website");
       await ThermalPrinter.setAlignment(0); // Left
-      
+
       await ThermalPrinter.feed(2);
       console.log("QR code print completed");
     } catch (error) {

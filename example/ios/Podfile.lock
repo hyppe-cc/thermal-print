@@ -1,6 +1,8 @@
 PODS:
   - boost (1.84.0)
   - DoubleConversion (1.1.6)
+  - EFQRCode (6.2.2):
+    - ef_swift_qrcodejs (~> 2.3.0)
   - EXConstants (17.1.7):
     - ExpoModulesCore
   - Expo (53.0.22):
@@ -1718,6 +1720,7 @@ PODS:
     - React-utils (= 0.79.6)
   - SocketRocket (0.7.1)
   - ThermalPrinter (0.1.0):
+    - EFQRCode (~> 6.2.2)
     - ExpoModulesCore
   - Yoga (0.0.0)
 
@@ -1805,6 +1808,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - EFQRCode
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -1969,6 +1973,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
+  EFQRCode: 3d3cb93a31339639b244f6d4da151099ef4d9e6e
   EXConstants: 98bcf0f22b820f9b28f9fee55ff2daededadd2f8
   Expo: a64c53f1ebaa36c439a87874759b6690785e60a4
   ExpoAsset: ef06e880126c375f580d4923fdd1cdf4ee6ee7d6
@@ -2044,7 +2049,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 06cf663b23a161f42a2e14087269753f422885c0
   ReactCommon: 44c86ec3ace664c0f33b7a2ac89aced8304ef25e
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  ThermalPrinter: 0be9c62543e8ec0b074071497b3bc252f0e80fbb
+  ThermalPrinter: a95de0865279cfe5e448113d13c81b5a85129c6c
   Yoga: dc7c21200195acacb62fa920c588e7c2106de45e
 
 PODFILE CHECKSUM: 4da7bc6291ca75b0f1cdc873f82c87565b142852

@@ -244,12 +244,50 @@ public class ThermalBleModule: Module {
         baseQRImage.draw(in: CGRect(x: 0, y: 0, width: squareSize, height: squareSize))
       }
       
-      // Convert UIImage directly to printer format
+      // Convert UIImage directly to printer format (keep existing QR behavior)
       let imageData = self.convertQRImageToPrinterData(resizedImage, printerWidth: printerWidth)
       
       // Send image data to printer
       self.printPromise = promise
       self.sendImageDataToPrinter(imageData)
+    }
+    
+    AsyncFunction("printImage") { (imageBase64: String, printerWidth: Int, promise: Promise) in
+      guard self.connectedPeripheral != nil,
+            self.writeCharacteristic != nil else {
+        promise.reject("NOT_CONNECTED", "No device connected")
+        return
+      }
+      
+      // Decode base64 image
+      guard let imageData = Data(base64Encoded: imageBase64),
+            let originalImage = UIImage(data: imageData) else {
+        promise.reject("INVALID_IMAGE", "Could not decode base64 image data")
+        return
+      }
+      
+      print("Original image: \(originalImage.size.width)x\(originalImage.size.height)")
+      
+      // Use same actual size as QR codes (which render at 3x due to retina)
+      let targetImageWidth: Int
+      if printerWidth <= 58 {
+        targetImageWidth = 360  // Match actual QR code size for 58mm
+      } else {
+        targetImageWidth = 450  // Match actual QR code size for 80mm (150 * 3)
+      }
+      
+      print("Printer width: \(printerWidth)mm, using fixed image width: \(targetImageWidth) pixels")
+      
+      // Scale image to fixed width while maintaining aspect ratio
+      let processedImage = self.processImageForThermalPrinting(originalImage, 
+                                                              targetWidth: targetImageWidth)
+      
+      // Convert to printer data with centering (same as QR code)
+      let printerData = self.convertImageToPrinterDataCentered(processedImage, printerWidth: printerWidth)
+      
+      // Send image data to printer
+      self.printPromise = promise
+      self.sendImageDataToPrinter(printerData)
     }
   }
   
@@ -270,9 +308,231 @@ public class ThermalBleModule: Module {
     self.scanPromise = nil
   }
   
-  // MARK: - QR Code Helper Methods
+  // MARK: - Image Processing Helper Methods
+  
+  private func processImageForThermalPrinting(_ image: UIImage, targetWidth: Int) -> UIImage {
+    guard let cgImage = image.cgImage else {
+      return image
+    }
+    
+    let originalWidth = CGFloat(cgImage.width)
+    let originalHeight = CGFloat(cgImage.height)
+    
+    // Calculate scale factor to fit image to target width
+    let scaleFactor = CGFloat(targetWidth) / originalWidth
+    
+    // Calculate new height maintaining aspect ratio
+    let targetHeight = Int(originalHeight * scaleFactor)
+    
+    print("Scaling image from \(Int(originalWidth))x\(Int(originalHeight)) to \(targetWidth)x\(targetHeight)")
+    print("Scale factor: \(scaleFactor)")
+    
+    // Create a Core Graphics context with exact pixel dimensions
+    let colorSpace = CGColorSpaceCreateDeviceRGB()
+    let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+    
+    guard let context = CGContext(data: nil,
+                                  width: targetWidth,
+                                  height: targetHeight,
+                                  bitsPerComponent: 8,
+                                  bytesPerRow: targetWidth * 4,
+                                  space: colorSpace,
+                                  bitmapInfo: bitmapInfo.rawValue) else {
+      return image
+    }
+    
+    // Set high quality interpolation
+    context.interpolationQuality = .high
+    
+    // Draw the scaled image
+    context.draw(cgImage, in: CGRect(x: 0, y: 0, width: targetWidth, height: targetHeight))
+    
+    // Get the scaled CGImage
+    guard let scaledCGImage = context.makeImage() else {
+      return image
+    }
+    
+    // Create UIImage with scale factor of 1.0 to ensure 1:1 pixel mapping
+    let processedImage = UIImage(cgImage: scaledCGImage, scale: 1.0, orientation: image.imageOrientation)
+    
+    print("Target was: \(targetWidth)x\(targetHeight)")
+    print("Actual CGImage size: \(scaledCGImage.width)x\(scaledCGImage.height)")
+    print("UIImage size: \(processedImage.size.width)x\(processedImage.size.height), scale: \(processedImage.scale)")
+    
+    // Verify the image is the expected size
+    if scaledCGImage.width != targetWidth {
+      print("WARNING: Image width mismatch! Expected \(targetWidth), got \(scaledCGImage.width)")
+    }
+    
+    return processedImage
+  }
+  
+  private func convertImageToPrinterDataCentered(_ image: UIImage, printerWidth: Int) -> Data {
+    // Use same approach as QR code - print at 360px width, let printer handle centering
+    guard let cgImage = image.cgImage else {
+      return Data()
+    }
+    
+    let imageWidth = cgImage.width
+    let imageHeight = cgImage.height
+    
+    print("Image for printing: \(imageWidth)x\(imageHeight) pixels")
+    // No padding - print exactly like QR code does at 360px
+    
+    // Convert image to 1-bit bitmap
+    let colorSpace = CGColorSpaceCreateDeviceGray()
+    var pixelData = [UInt8](repeating: 0, count: imageWidth * imageHeight)
+    
+    let context = CGContext(data: &pixelData,
+                           width: imageWidth,
+                           height: imageHeight,
+                           bitsPerComponent: 8,
+                           bytesPerRow: imageWidth,
+                           space: colorSpace,
+                           bitmapInfo: CGImageAlphaInfo.none.rawValue)
+    
+    context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: imageWidth, height: imageHeight))
+    
+    var result = Data()
+    
+    // Use ESC/POS raster image format (GS v 0) for proper block printing
+    result.append(contentsOf: [0x1D, 0x76, 0x30, 0x00]) // GS v 0 m
+    
+    // Calculate width in bytes - no padding, same as QR code
+    let widthBytes = (imageWidth + 7) / 8
+    print("Image width \(imageWidth) pixels = \(widthBytes) bytes")
+    
+    let xL = UInt8(widthBytes & 0xFF)
+    let xH = UInt8((widthBytes >> 8) & 0xFF)
+    let yL = UInt8(imageHeight & 0xFF)
+    let yH = UInt8((imageHeight >> 8) & 0xFF)
+    
+    result.append(contentsOf: [xL, xH, yL, yH])
+    
+    // Process all lines without padding - exactly like QR code
+    for y in 0..<imageHeight {
+      var lineBytes = Data()
+      var bitBuffer: UInt8 = 0
+      var bitCount = 0
+      
+      // Process image pixels only
+      for x in 0..<imageWidth {
+        let pixelIndex = y * imageWidth + x
+        let pixel = pixelData[pixelIndex]
+        let bit: UInt8 = pixel < 128 ? 1 : 0 // 1 = black, 0 = white
+        
+        bitBuffer = (bitBuffer << 1) | bit
+        bitCount += 1
+        
+        if bitCount == 8 {
+          lineBytes.append(bitBuffer)
+          bitBuffer = 0
+          bitCount = 0
+        }
+      }
+      
+      // Complete the last byte if needed
+      if bitCount > 0 {
+        bitBuffer <<= (8 - bitCount)
+        lineBytes.append(bitBuffer)
+      }
+      
+      result.append(lineBytes)
+    }
+    
+    // Add spacing after image (same as QR code)
+    result.append(0x0A)
+    
+    return result
+  }
+  
+  private func convertImageToPrinterData(_ image: UIImage, printerWidth: Int) -> Data {
+    guard let cgImage = image.cgImage else {
+      return Data()
+    }
+    
+    // Use actual CGImage dimensions (raw pixels, no scale factor)
+    let imageWidth = cgImage.width
+    let imageHeight = cgImage.height
+    
+    print("CGImage actual dimensions: \(imageWidth)x\(imageHeight)")
+    print("UIImage size: \(image.size.width)x\(image.size.height), scale: \(image.scale)")
+    
+    // Convert image to 1-bit bitmap
+    let colorSpace = CGColorSpaceCreateDeviceGray()
+    var pixelData = [UInt8](repeating: 0, count: imageWidth * imageHeight)
+    
+    let context = CGContext(data: &pixelData,
+                           width: imageWidth,
+                           height: imageHeight,
+                           bitsPerComponent: 8,
+                           bytesPerRow: imageWidth,
+                           space: colorSpace,
+                           bitmapInfo: CGImageAlphaInfo.none.rawValue)
+    
+    context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: imageWidth, height: imageHeight))
+    
+    print("Converting image to printer data: \(imageWidth)x\(imageHeight) pixels")
+    
+    var result = Data()
+    
+    // Since image is already scaled to printer width, no centering needed
+    // Image width should match printer dots width after scaling
+    
+    // Use ESC/POS raster image format (GS v 0) for proper block printing
+    result.append(contentsOf: [0x1D, 0x76, 0x30, 0x00]) // GS v 0 m
+    
+    // Calculate width in bytes
+    let widthBytes = (imageWidth + 7) / 8
+    print("Image width \(imageWidth) pixels = \(widthBytes) bytes")
+    
+    let xL = UInt8(widthBytes & 0xFF)
+    let xH = UInt8((widthBytes >> 8) & 0xFF)
+    let yL = UInt8(imageHeight & 0xFF)
+    let yH = UInt8((imageHeight >> 8) & 0xFF)
+    
+    result.append(contentsOf: [xL, xH, yL, yH])
+    
+    // Process all lines
+    for y in 0..<imageHeight {
+      var lineBytes = Data()
+      var bitBuffer: UInt8 = 0
+      var bitCount = 0
+      
+      // Process image pixels
+      for x in 0..<imageWidth {
+        let pixelIndex = y * imageWidth + x
+        let pixel = pixelData[pixelIndex]
+        let bit: UInt8 = pixel < 128 ? 1 : 0 // 1 = black, 0 = white
+        
+        bitBuffer = (bitBuffer << 1) | bit
+        bitCount += 1
+        
+        if bitCount == 8 {
+          lineBytes.append(bitBuffer)
+          bitBuffer = 0
+          bitCount = 0
+        }
+      }
+      
+      // Complete the last byte if needed
+      if bitCount > 0 {
+        bitBuffer <<= (8 - bitCount)
+        lineBytes.append(bitBuffer)
+      }
+      
+      result.append(lineBytes)
+    }
+    
+    // Add spacing after image
+    result.append(0x0A)
+    
+    return result
+  }
   
   private func convertQRImageToPrinterData(_ qrImage: UIImage, printerWidth: Int) -> Data {
+    // Use the unified image conversion method but without centering for QR codes
+    // to maintain the existing behavior
     guard let cgImage = qrImage.cgImage else {
       return Data()
     }
@@ -298,7 +558,7 @@ public class ThermalBleModule: Module {
     
     var result = Data()
     
-    // Simple approach - no padding, just print QR code as-is
+    // Simple approach - no padding, just print QR code as-is (keep existing behavior)
     print("QR data will be \(qrWidth) pixels wide")
     
     // Use ESC/POS raster image format (GS v 0) for proper block printing
@@ -346,86 +606,6 @@ public class ThermalBleModule: Module {
     }
     
     // Add spacing after QR code
-    result.append(0x0A)
-    
-    return result
-  }
-  
-  private func convertImageToPrinterData(_ image: UIImage, width: Int, height: Int, leftPadding: Int) -> Data {
-    // Convert UIImage to grayscale bitmap
-    let grayscaleData = imageToGrayscale(image, width: width, height: height)
-    
-    // Apply threshold to convert to black/white
-    let binaryData = applyThreshold(grayscaleData, width: width, height: height)
-    
-    // Convert to ESC/POS image format
-    let escPosData = convertToESCPOSFormat(binaryData, width: width, height: height, leftPadding: leftPadding)
-    
-    return escPosData
-  }
-  
-  private func imageToGrayscale(_ image: UIImage, width: Int, height: Int) -> [UInt8] {
-    let colorSpace = CGColorSpaceCreateDeviceGray()
-    var grayscaleData = [UInt8](repeating: 0, count: width * height)
-    
-    let context = CGContext(data: &grayscaleData,
-                           width: width,
-                           height: height,
-                           bitsPerComponent: 8,
-                           bytesPerRow: width,
-                           space: colorSpace,
-                           bitmapInfo: CGImageAlphaInfo.none.rawValue)
-    
-    context?.draw(image.cgImage!, in: CGRect(x: 0, y: 0, width: width, height: height))
-    
-    return grayscaleData
-  }
-  
-  private func applyThreshold(_ grayscaleData: [UInt8], width: Int, height: Int) -> [UInt8] {
-    let threshold: UInt8 = 128
-    return grayscaleData.map { $0 > threshold ? 0 : 1 } // 0 = white, 1 = black
-  }
-  
-  private func convertToESCPOSFormat(_ binaryData: [UInt8], width: Int, height: Int, leftPadding: Int) -> Data {
-    var result = Data()
-    
-    // Add left padding if specified
-    if leftPadding > 0 {
-      // ESC a n (set left margin)
-      result.append(contentsOf: [0x1B, 0x61, UInt8(leftPadding)])
-    }
-    
-    // ESC/POS image command: GS v 0
-    result.append(contentsOf: [0x1D, 0x76, 0x30, 0x00]) // GS v 0 m
-    
-    // Width and height in bytes
-    let widthBytes = (width + 7) / 8 // Round up to nearest byte
-    let xL = UInt8(widthBytes & 0xFF)
-    let xH = UInt8((widthBytes >> 8) & 0xFF)
-    let yL = UInt8(height & 0xFF)
-    let yH = UInt8((height >> 8) & 0xFF)
-    
-    result.append(contentsOf: [xL, xH, yL, yH])
-    
-    // Convert binary data to bytes
-    for y in 0..<height {
-      var lineData = Data()
-      for x in stride(from: 0, to: width, by: 8) {
-        var byte: UInt8 = 0
-        for bit in 0..<8 {
-          if x + bit < width {
-            let pixelIndex = y * width + x + bit
-            if binaryData[pixelIndex] == 1 {
-              byte |= (1 << (7 - bit))
-            }
-          }
-        }
-        lineData.append(byte)
-      }
-      result.append(lineData)
-    }
-    
-    // Add line feed after image
     result.append(0x0A)
     
     return result
