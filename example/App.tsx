@@ -1,37 +1,116 @@
-import { useEvent } from 'expo';
-import ThermalPrinter, { ThermalPrinterView } from 'thermal-printer';
-import { Button, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { useEffect, useState } from "react";
+import {
+  Button,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+import { ThermalBleModule, ThermalPrinter, addConnectionListener } from "thermal-printer";
 
 export default function App() {
-  const onChangePayload = useEvent(ThermalPrinter, 'onChange');
+  const [devices, setDevices] = useState<any[]>([]);
+  const [scanning, setScanning] = useState(false);
+  const [scanStartTime, setScanStartTime] = useState<number>(0);
+
+  useEffect(() => {
+    const subscription = addConnectionListener((event) => {
+      console.log("Connection event:", event);
+    });
+
+    return () => subscription.remove();
+  }, []);
+
+  const startScan = async () => {
+    try {
+      setScanning(true);
+      setDevices([]);
+      setScanStartTime(Date.now());
+      console.log("Starting scan... (30 second timeout)");
+
+      // Start scan - it will timeout after 30 seconds
+      const foundDevices = await ThermalBleModule.scanDevices();
+      console.log("Scan completed, devices:", foundDevices);
+      setDevices(foundDevices);
+    } catch (error) {
+      console.error("Scan error:", error);
+    } finally {
+      setScanning(false);
+      setScanStartTime(0);
+    }
+  };
+
+  const handleConnect = async (device: { address: string; name: string }) => {
+    console.log(device);
+    await ThermalBleModule.connect(device.address);
+
+    console.log('connected');
+  };
+
+  const stopScan = async () => {
+    try {
+      await ThermalBleModule.stopScan();
+      console.log("Scan stopped");
+      setScanning(false);
+    } catch (error) {
+      console.error("Stop scan error:", error);
+    }
+  };
+
+  const testPrint = async () => {
+    try {
+      await ThermalPrinter.printText("Hello World!");
+      await ThermalPrinter.printText("This is a test print");
+      await ThermalPrinter.printLine();
+      await ThermalPrinter.setBold(true);
+      await ThermalPrinter.printText("Bold text");
+      await ThermalPrinter.setBold(false);
+      await ThermalPrinter.feed(10);
+      console.log("Print completed");
+    } catch (error) {
+      console.error("Print error:", error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container}>
-        <Text style={styles.header}>Module API Example</Text>
-        <Group name="Constants">
-          <Text>{ThermalPrinter.PI}</Text>
-        </Group>
-        <Group name="Functions">
-          <Text>{ThermalPrinter.hello()}</Text>
-        </Group>
-        <Group name="Async functions">
+        <Text style={styles.header}>Thermal Printer BLE Test</Text>
+
+        <Group name="Bluetooth Scanning">
           <Button
-            title="Set value"
-            onPress={async () => {
-              await ThermalPrinter.setValueAsync('Hello from JS!');
-            }}
+            title={scanning ? "Scanning... (30s timeout)" : "Start Scan"}
+            onPress={startScan}
+            disabled={scanning}
           />
+          {scanning && (
+            <>
+              <Button title="Stop Scan Early" onPress={stopScan} />
+              <Text>Scanning will auto-stop after 30 seconds</Text>
+            </>
+          )}
+
+          {devices.length > 0 && (
+            <View>
+              <Text style={styles.groupHeader}>Found Devices:</Text>
+              {devices.map((device, index) => (
+                <TouchableOpacity
+                  onPress={() => handleConnect(device)}
+                  key={index}
+                >
+                  <Text>
+                    {device.name || "Unknown"} - {device.address}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
         </Group>
-        <Group name="Events">
-          <Text>{onChangePayload?.value}</Text>
-        </Group>
-        <Group name="Views">
-          <ThermalPrinterView
-            url="https://www.example.com"
-            onLoad={({ nativeEvent: { url } }) => console.log(`Loaded: ${url}`)}
-            style={styles.view}
-          />
+
+        <Group name="Print Test">
+          <Button title="Print Test" onPress={testPrint} />
         </Group>
       </ScrollView>
     </SafeAreaView>
@@ -58,13 +137,13 @@ const styles = {
   },
   group: {
     margin: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
     padding: 20,
   },
   container: {
     flex: 1,
-    backgroundColor: '#eee',
+    backgroundColor: "#eee",
   },
   view: {
     flex: 1,

@@ -1,5 +1,10 @@
-// Reexport the native module. On web, it will be resolved to ThermalPrinterModule.web.ts
-// and on native platforms to ThermalPrinterModule.ts
-export { default } from './ThermalPrinterModule';
-export { default as ThermalPrinterView } from './ThermalPrinterView';
-export * from  './ThermalPrinter.types';
+
+// Export the printer class for building print commands
+export { ThermalPrinter } from './ThermalPrinter';
+
+// Export the BLE module for managing Bluetooth connections
+export { ThermalBleModule, addConnectionListener } from './ThermalBleModule';
+
+// Export types
+export * from './ThermalPrinter.types';
+export type { EventSubscription } from 'expo-modules-core';

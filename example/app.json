@@ -14,7 +14,12 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "expo.modules.thermalprinter.example"
+      "bundleIdentifier": "expo.modules.thermalprinter.example",
+      "infoPlist": {
+        "UISupportedExternalAccessoryProtocols": ["com.epson.escpos"],
+        "NSBluetoothAlwaysUsageDescription": "This app needs Bluetooth access to connect to thermal printers",
+        "NSBluetoothPeripheralUsageDescription": "This app needs Bluetooth access to connect to thermal printers"
+      }
     },
     "android": {
       "adaptiveIcon": {

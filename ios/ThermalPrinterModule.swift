@@ -1,48 +1,54 @@
 import ExpoModulesCore
+import CoreBluetooth
 
 public class ThermalPrinterModule: Module {
-  // Each module class must implement the definition function. The definition consists of components
-  // that describes the module's functionality and behavior.
-  // See https://docs.expo.dev/modules/module-api for more details about available components.
+  // ESC/POS Commands
+  private let ESC: UInt8 = 0x1B
+  private let GS: UInt8 = 0x1D
+  private let LF: UInt8 = 0x0A  // Line feed
+  
+  // Reference to connected peripheral and characteristic
+  private var connectedPeripheral: CBPeripheral?
+  private var writeCharacteristic: CBCharacteristic?
+  
   public func definition() -> ModuleDefinition {
-    // Sets the name of the module that JavaScript code will use to refer to the module. Takes a string as an argument.
-    // Can be inferred from module's class name, but it's recommended to set it explicitly for clarity.
-    // The module will be accessible from `requireNativeModule('ThermalPrinter')` in JavaScript.
+    
     Name("ThermalPrinter")
 
-    // Sets constant properties on the module. Can take a dictionary or a closure that returns a dictionary.
-    Constants([
-      "PI": Double.pi
-    ])
-
-    // Defines event names that the module can send to JavaScript.
-    Events("onChange")
-
-    // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-    Function("hello") {
-      return "Hello world! 👋"
+    AsyncFunction("printText") { (text: String, promise: Promise) in
+      self.printTextToDevice(text, promise: promise)
     }
-
-    // Defines a JavaScript function that always returns a Promise and whose native code
-    // is by default dispatched on the different thread than the JavaScript runtime runs on.
-    AsyncFunction("setValueAsync") { (value: String) in
-      // Send an event to JavaScript.
-      self.sendEvent("onChange", [
-        "value": value
-      ])
+    
+    AsyncFunction("printLine") { (promise: Promise) in
+      // Print an empty line (just line feed)
+      self.printTextToDevice("\n", promise: promise)
     }
-
-    // Enables the module to be used as a native view. Definition components that are accepted as part of the
-    // view definition: Prop, Events.
-    View(ThermalPrinterView.self) {
-      // Defines a setter for the `url` prop.
-      Prop("url") { (view: ThermalPrinterView, url: URL) in
-        if view.webView.url != url {
-          view.webView.load(URLRequest(url: url))
-        }
-      }
-
-      Events("onLoad")
+    
+    AsyncFunction("setPeripheral") { (peripheralId: String, promise: Promise) in
+      // This will be called from ThermalBleModule when connected
+      // For now, just resolve
+      promise.resolve(nil)
     }
+  }
+  
+  private func printTextToDevice(_ text: String, promise: Promise) {
+    // For now, we'll need to get the peripheral from ThermalBleModule
+    // This is a simplified version that just prepares the data
+    
+    var dataToSend = Data()
+    
+    // Convert text to data using UTF-8 encoding
+    if let textData = text.data(using: .utf8) {
+      dataToSend.append(textData)
+    }
+    
+    // Add line feed at the end
+    dataToSend.append(LF)
+    
+    // For testing, just log and resolve
+    print("Would send to printer: \(text)")
+    print("Data bytes: \(dataToSend.map { String(format: "%02X", $0) }.joined(separator: " "))")
+    
+    promise.resolve("Text sent: \(text)")
   }
 }

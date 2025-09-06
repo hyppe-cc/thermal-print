@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		26C04A41917B913235D09CEA /* libPods-thermalprinterexample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F19954CEEAAF0BEC1091F8E /* libPods-thermalprinterexample.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		A5B3CD402AED53B869AA7AD7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AD098ED3C9A21F7C82CE060E /* PrivacyInfo.xcprivacy */; };
-		A64C45B6A49D91029982F1F4 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E51DCD81AE1017C2F7F1B89C /* ExpoModulesProvider.swift */; };
-		B49DA35E38FE84CB0DBCC820 /* libPods-thermalprinterexample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBD7635D4B325C5A3D4B011A /* libPods-thermalprinterexample.a */; };
+		3ED52B8E760B989721FE64FF /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9525EB06DF37DE409DFF802A /* ExpoModulesProvider.swift */; };
+		467716146F8FA451D141397C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EA4BF720E87659BF27B14670 /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
@@ -20,13 +20,13 @@
 		13B07F961A680F5B00A75B9A /* thermalprinterexample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = thermalprinterexample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = thermalprinterexample/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = thermalprinterexample/Info.plist; sourceTree = "<group>"; };
+		6F19954CEEAAF0BEC1091F8E /* libPods-thermalprinterexample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-thermalprinterexample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		751715A1F56022EBFC3A60D6 /* Pods-thermalprinterexample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-thermalprinterexample.release.xcconfig"; path = "Target Support Files/Pods-thermalprinterexample/Pods-thermalprinterexample.release.xcconfig"; sourceTree = "<group>"; };
+		9525EB06DF37DE409DFF802A /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-thermalprinterexample/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = thermalprinterexample/SplashScreen.storyboard; sourceTree = "<group>"; };
-		AD098ED3C9A21F7C82CE060E /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = thermalprinterexample/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		B3643A2747BB712A369389BA /* Pods-thermalprinterexample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-thermalprinterexample.debug.xcconfig"; path = "Target Support Files/Pods-thermalprinterexample/Pods-thermalprinterexample.debug.xcconfig"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		C0B33B0276DAC3AD5B84A88F /* Pods-thermalprinterexample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-thermalprinterexample.debug.xcconfig"; path = "Target Support Files/Pods-thermalprinterexample/Pods-thermalprinterexample.debug.xcconfig"; sourceTree = "<group>"; };
-		DBD7635D4B325C5A3D4B011A /* libPods-thermalprinterexample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-thermalprinterexample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E1E6F3E4AB0D4C5C3382F198 /* Pods-thermalprinterexample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-thermalprinterexample.release.xcconfig"; path = "Target Support Files/Pods-thermalprinterexample/Pods-thermalprinterexample.release.xcconfig"; sourceTree = "<group>"; };
-		E51DCD81AE1017C2F7F1B89C /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-thermalprinterexample/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		EA4BF720E87659BF27B14670 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = thermalprinterexample/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = thermalprinterexample/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* thermalprinterexample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "thermalprinterexample-Bridging-Header.h"; path = "thermalprinterexample/thermalprinterexample-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B49DA35E38FE84CB0DBCC820 /* libPods-thermalprinterexample.a in Frameworks */,
+				26C04A41917B913235D09CEA /* libPods-thermalprinterexample.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,28 +53,35 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				AD098ED3C9A21F7C82CE060E /* PrivacyInfo.xcprivacy */,
+				EA4BF720E87659BF27B14670 /* PrivacyInfo.xcprivacy */,
 			);
 			name = thermalprinterexample;
+			sourceTree = "<group>";
+		};
+		291EAE4AA3C829AE2471412E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				B3643A2747BB712A369389BA /* Pods-thermalprinterexample.debug.xcconfig */,
+				751715A1F56022EBFC3A60D6 /* Pods-thermalprinterexample.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				DBD7635D4B325C5A3D4B011A /* libPods-thermalprinterexample.a */,
+				6F19954CEEAAF0BEC1091F8E /* libPods-thermalprinterexample.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		3CDB24D3FBCA6AEB3BA1B8E9 /* Pods */ = {
+		316C845491AD7BA4D6EFDFA0 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				C0B33B0276DAC3AD5B84A88F /* Pods-thermalprinterexample.debug.xcconfig */,
-				E1E6F3E4AB0D4C5C3382F198 /* Pods-thermalprinterexample.release.xcconfig */,
+				D011A7A1F9334B7A7C9E86CF /* thermalprinterexample */,
 			);
-			name = Pods;
-			path = Pods;
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -91,8 +98,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				3CDB24D3FBCA6AEB3BA1B8E9 /* Pods */,
-				CD5EA99A7D1C5827E11929A7 /* ExpoModulesProviders */,
+				291EAE4AA3C829AE2471412E /* Pods */,
+				316C845491AD7BA4D6EFDFA0 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -116,18 +123,10 @@
 			path = thermalprinterexample/Supporting;
 			sourceTree = "<group>";
 		};
-		CD5EA99A7D1C5827E11929A7 /* ExpoModulesProviders */ = {
+		D011A7A1F9334B7A7C9E86CF /* thermalprinterexample */ = {
 			isa = PBXGroup;
 			children = (
-				D9D3D1AD6A25E73B9F6C5177 /* thermalprinterexample */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
-		D9D3D1AD6A25E73B9F6C5177 /* thermalprinterexample */ = {
-			isa = PBXGroup;
-			children = (
-				E51DCD81AE1017C2F7F1B89C /* ExpoModulesProvider.swift */,
+				9525EB06DF37DE409DFF802A /* ExpoModulesProvider.swift */,
 			);
 			name = thermalprinterexample;
 			sourceTree = "<group>";
@@ -140,13 +139,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "thermalprinterexample" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				DAAF183F8EC884380563B4E6 /* [Expo] Configure project */,
+				68419696FE93A9F66F05A098 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				C96CC7BA79BFB693CE4AA7B6 /* [CP] Embed Pods Frameworks */,
+				6ECEE4E305FFE4AFD5C11B83 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,7 +195,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				A5B3CD402AED53B869AA7AD7 /* PrivacyInfo.xcprivacy in Resources */,
+				467716146F8FA451D141397C /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,6 +239,43 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		68419696FE93A9F66F05A098 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-thermalprinterexample/expo-configure-project.sh\"\n";
+		};
+		6ECEE4E305FFE4AFD5C11B83 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-thermalprinterexample/Pods-thermalprinterexample-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-thermalprinterexample/Pods-thermalprinterexample-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -272,43 +308,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-thermalprinterexample/Pods-thermalprinterexample-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C96CC7BA79BFB693CE4AA7B6 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-thermalprinterexample/Pods-thermalprinterexample-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-thermalprinterexample/Pods-thermalprinterexample-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DAAF183F8EC884380563B4E6 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-thermalprinterexample/expo-configure-project.sh\"\n";
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -317,7 +316,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				A64C45B6A49D91029982F1F4 /* ExpoModulesProvider.swift in Sources */,
+				3ED52B8E760B989721FE64FF /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,12 +325,13 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C0B33B0276DAC3AD5B84A88F /* Pods-thermalprinterexample.debug.xcconfig */;
+			baseConfigurationReference = B3643A2747BB712A369389BA /* Pods-thermalprinterexample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = thermalprinterexample/thermalprinterexample.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4L3BNUJJZJ;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -362,12 +362,13 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E1E6F3E4AB0D4C5C3382F198 /* Pods-thermalprinterexample.release.xcconfig */;
+			baseConfigurationReference = 751715A1F56022EBFC3A60D6 /* Pods-thermalprinterexample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = thermalprinterexample/thermalprinterexample.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4L3BNUJJZJ;
 				INFOPLIST_FILE = thermalprinterexample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -445,10 +446,7 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -503,10 +501,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
