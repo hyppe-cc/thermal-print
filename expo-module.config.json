@@ -1,9 +1,9 @@
 {
   "platforms": ["apple", "android", "web"],
   "apple": {
-    "modules": ["ThermalPrinterModule", "ThermalBleModule"]
+    "modules": ["ThermalBleModule"]
   },
   "android": {
-    "modules": ["expo.modules.thermalprinter.ThermalPrinterModule"]
+    "modules": ["expo.modules.thermalprinter.ThermalBleModule"]
   }
 }

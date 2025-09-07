@@ -27,10 +27,54 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "expo.modules.thermalprinter.example"
+      "package": "expo.modules.thermalprinter.example",
+      "permissions": [
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.BLUETOOTH_SCAN",
+        "android.permission.BLUETOOTH_CONNECT"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "manifestQueries": {
+              "uses-permission": [
+                {
+                  "name": "android.permission.BLUETOOTH",
+                  "maxSdkVersion": 30
+                },
+                {
+                  "name": "android.permission.BLUETOOTH_ADMIN",
+                  "maxSdkVersion": 30
+                },
+                {
+                  "name": "android.permission.ACCESS_FINE_LOCATION",
+                  "maxSdkVersion": 30
+                },
+                {
+                  "name": "android.permission.BLUETOOTH_SCAN"
+                },
+                {
+                  "name": "android.permission.BLUETOOTH_CONNECT"
+                }
+              ],
+              "uses-feature": [
+                {
+                  "name": "android.hardware.bluetooth_le",
+                  "required": false
+                }
+              ]
+            }
+          }
+        }
+      ]
+    ]
   }
 }

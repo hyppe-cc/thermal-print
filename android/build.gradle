@@ -41,3 +41,8 @@ android {
     abortOnError false
   }
 }
+
+dependencies {
+  // ZXing for QR code generation
+  implementation 'com.google.zxing:core:3.5.2'
+}
