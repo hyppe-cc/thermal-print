@@ -1,5 +1,5 @@
 {
-  "name": "thermal-printer",
+  "name": "@fervillanuev4s/thermal-printer",
   "version": "0.1.0",
   "description": "Print with a thermal printer as the name says",
   "main": "build/index.js",
