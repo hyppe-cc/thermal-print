@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Button,
   SafeAreaView,
   ScrollView,
@@ -9,31 +10,40 @@ import {
 } from "react-native";
 
 import {
+  BluetoothDevice,
   ThermalBleModule,
   ThermalPrinter,
   addConnectionListener,
+  addDeviceFoundListener,
 } from "thermal-printer";
 import { base } from "./bas";
 import { pika } from "./pika";
 
 export default function App() {
-  const [devices, setDevices] = useState<any[]>([]);
+  const [devices, setDevices] = useState<BluetoothDevice[]>([]);
   const [scanning, setScanning] = useState(false);
-  const [scanStartTime, setScanStartTime] = useState<number>(0);
+  const [connecting, setConnecting] = useState(false);
 
   useEffect(() => {
     const subscription = addConnectionListener((event) => {
       console.log("Connection event:", event);
+      setConnecting(false);
     });
 
-    return () => subscription.remove();
+    const device = addDeviceFoundListener((e) => {
+      setDevices(() => [...devices, e.device]);
+    });
+
+    return () => {
+      subscription.remove();
+      device.remove();
+    };
   }, []);
 
   const startScan = async () => {
     try {
       setScanning(true);
       setDevices([]);
-      setScanStartTime(Date.now());
       console.log("Starting scan... (30 second timeout)");
 
       // Start scan - it will timeout after 30 seconds
@@ -44,14 +54,12 @@ export default function App() {
       console.error("Scan error:", error);
     } finally {
       setScanning(false);
-      setScanStartTime(0);
     }
   };
 
   const handleConnect = async (device: { address: string; name: string }) => {
-    console.log(device);
+    setConnecting(true);
     await ThermalBleModule.connect(device.address);
-
     console.log("connected");
   };
 
@@ -157,9 +165,11 @@ export default function App() {
               <Text style={styles.groupHeader}>Found Devices:</Text>
               {devices.map((device, index) => (
                 <TouchableOpacity
+                  disabled={connecting}
                   onPress={() => handleConnect(device)}
                   key={index}
                 >
+                  {connecting && <ActivityIndicator />}
                   <Text>
                     {device.name || "Unknown"} - {device.address}
                   </Text>

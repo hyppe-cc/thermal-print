@@ -4,13 +4,15 @@ import { EventSubscription } from "expo-modules-core";
 import {
   ThermalBleModuleEvents,
   BluetoothConnectionEvent,
+  BluetoothDeviceFoundEvent,
+  BluetoothDevice,
 } from "./ThermalPrinter.types";
 
 declare class ThermalBleNativeModule extends NativeModule<ThermalBleModuleEvents> {
   isBluetoothEnabled(): Promise<boolean>;
   enableBluetooth(): Promise<boolean>;
   disableBluetooth(): Promise<boolean>;
-  scanDevices(): Promise<any[]>;
+  scanDevices(): Promise<BluetoothDevice[]>;
   stopScan(): Promise<void>;
   connect(deviceId: string): Promise<void>;
   disconnect(): Promise<void>;
@@ -27,4 +29,10 @@ export function addConnectionListener(
   listener: (event: BluetoothConnectionEvent) => void
 ): EventSubscription {
   return ThermalBleModule.addListener("onConnectionChange", listener);
+}
+
+export function addDeviceFoundListener(
+  listener: (event: BluetoothDeviceFoundEvent) => void
+): EventSubscription {
+  return ThermalBleModule.addListener("onDeviceFound", listener);
 }

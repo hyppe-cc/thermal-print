@@ -3,7 +3,7 @@
 export { ThermalPrinter } from './ThermalPrinter';
 
 // Export the BLE module for managing Bluetooth connections
-export { ThermalBleModule, addConnectionListener } from './ThermalBleModule';
+export { ThermalBleModule, addConnectionListener, addDeviceFoundListener } from './ThermalBleModule';
 
 // Export types
 export * from './ThermalPrinter.types';

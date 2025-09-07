@@ -611,6 +611,34 @@ class ThermalBleModule : Module() {
       }
     }
     
+    // Also check bonded devices immediately at scan start
+    try {
+      bluetoothAdapter?.bondedDevices?.forEach { bondedDevice ->
+        // Only add devices that might be printers (have device class or name indicating printer)
+        val deviceName = getDeviceName(bondedDevice).lowercase()
+        if (deviceName.contains("printer") || deviceName.contains("pos") || 
+            deviceName.contains("thermal") || deviceName.contains("receipt")) {
+          
+          if (!foundDevices.containsKey(bondedDevice.address)) {
+            foundDevices[bondedDevice.address] = bondedDevice
+            Log.d(TAG, "Found bonded printer device: ${deviceName} (${bondedDevice.address})")
+            
+            // Send onDeviceFound event immediately
+            sendEvent("onDeviceFound", mapOf(
+              "device" to mapOf(
+                "address" to bondedDevice.address,
+                "name" to getDeviceName(bondedDevice)
+              )
+            ))
+          }
+        }
+      }
+    } catch (e: SecurityException) {
+      Log.e(TAG, "SecurityException accessing bonded devices: ${e.message}")
+    } catch (e: Exception) {
+      Log.e(TAG, "Exception accessing bonded devices: ${e.message}")
+    }
+    
     // Start scanning with more aggressive settings
     try {
       val scanSettings = android.bluetooth.le.ScanSettings.Builder()
@@ -827,25 +855,6 @@ class ThermalBleModule : Module() {
     scanTimeoutRunnable?.let { scanHandler.removeCallbacks(it) }
     scanTimeoutRunnable = null
     
-    // Also try to find previously paired/bonded devices if no devices found during scan
-    if (foundDevices.isEmpty()) {
-      Log.d(TAG, "No devices found during scan, checking bonded devices...")
-      try {
-        bluetoothAdapter?.bondedDevices?.forEach { bondedDevice ->
-          // Only add devices that might be printers (have device class or name indicating printer)
-          val deviceName = getDeviceName(bondedDevice).lowercase()
-          if (deviceName.contains("printer") || deviceName.contains("pos") || 
-              deviceName.contains("thermal") || deviceName.contains("receipt")) {
-            foundDevices[bondedDevice.address] = bondedDevice
-            Log.d(TAG, "Added bonded printer device: ${deviceName} (${bondedDevice.address})")
-          }
-        }
-      } catch (e: SecurityException) {
-        Log.e(TAG, "SecurityException accessing bonded devices: ${e.message}")
-      } catch (e: Exception) {
-        Log.e(TAG, "Exception accessing bonded devices: ${e.message}")
-      }
-    }
     
     // Return found devices
     val devices = foundDevices.map { (_, device) ->

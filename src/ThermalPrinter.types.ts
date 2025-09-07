@@ -11,6 +11,11 @@ export type ChangeEventPayload = {
 
 export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 'error';
 
+export type BluetoothDevice = {
+  address: string;
+  name: string;
+};
+
 export type BluetoothConnectionEvent = {
   status: ConnectionStatus;
   deviceId?: string;
@@ -18,8 +23,13 @@ export type BluetoothConnectionEvent = {
   error?: string;
 };
 
+export type BluetoothDeviceFoundEvent = {
+  device: BluetoothDevice;
+};
+
 export type ThermalBleModuleEvents = {
   onConnectionChange: (params: BluetoothConnectionEvent) => void;
+  onDeviceFound: (params: BluetoothDeviceFoundEvent) => void;
 };
 
 export type ThermalPrinterViewProps = {
