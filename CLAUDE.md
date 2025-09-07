@@ -85,3 +85,26 @@
   - NSBluetoothPeripheralUsageDescription
 
   Complete workflow: Scan → Connect → Print with ESC/POS commands
+
+  Android Native Module (ThermalBleModule.kt):
+  - isBluetoothEnabled() - Check if Bluetooth is enabled
+  - scanDevices() - Scan for BLE devices with 30-second auto-timeout
+  - stopScan() - Manually stop scanning and return found devices
+  - connect(deviceId) - Connect to a specific device
+  - disconnect() - Disconnect from current device
+  - isConnected() - Check connection status
+  - writeData(data) - Send byte array to connected printer
+  - printQRCode(content, printerWidth) - Generate and print QR codes
+  - printImage(imageBase64, printerWidth) - Print images from base64 data
+  - Event emitters:
+    - onConnectionChange - Fires on connect/disconnect/error
+    - onDeviceFound - Fires when devices are discovered during scan
+
+  Android Implementation Details:
+  - Uses BluetoothManager and BluetoothAdapter for BLE operations
+  - GATT callback pattern for connection management
+  - Automatic service/characteristic discovery on connection
+  - Chunked data transmission for reliable printing
+  - ZXing library for QR code generation
+  - Supports both Android 11 and Android 12+ permission models
+  - ESC/POS formatting handled by TypeScript ThermalPrinter class
